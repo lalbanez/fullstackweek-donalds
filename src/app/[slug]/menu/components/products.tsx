@@ -12,7 +12,8 @@ interface ProductsProps {
 }
 
 const Products = ({products}:ProductsProps) => {
-const { slug } = useParams<{slug: string}>;
+    
+    const { slug } = useParams<{slug: string}>();
     return (
     
     <div className="space-y-3 px-5 py-3">

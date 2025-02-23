@@ -28,7 +28,7 @@ const ProductPage = async ({ params }: ProductPageProps) => {
     if(!product) {
         return notFound();
     }
-    if(product.restaurant.slug != slug){
+    if(product.restaurant.slug !== slug){
         return notFound();
     }
     return (

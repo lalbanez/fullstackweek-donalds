@@ -16,6 +16,7 @@ export interface ICartContext {
     decreaseProductQuantity(productId: string): void;
     increaseProductQuantity(productId: string): void;
     removeProduct(productId: string): void;
+    total: number;
 }
 
 export const CartContext = createContext<ICartContext>({
@@ -26,11 +27,16 @@ export const CartContext = createContext<ICartContext>({
     decreaseProductQuantity: () => { },
     increaseProductQuantity: () => { },
     removeProduct: () => { },
+    total: 0,
 });
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
     const [products, setProducts] = useState<CartProduct[]>([]);
     const [isOpen, setIsOpen] = useState<boolean>(false);
+
+    const total = products.reduce((acc, product) => {
+        return acc + product.price * product.quantity;
+    }, 0);
 
     const toggleCart = () => {
         setIsOpen((prev) => !prev);
@@ -57,40 +63,40 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const decreaseProductQuantity = (productId: string) => {
-        setProducts(prevProducts =>{
+        setProducts(prevProducts => {
             return prevProducts.map(prevProduct => {
-                if(prevProduct.id !== productId) {
+                if (prevProduct.id !== productId) {
                     return prevProduct;
                 }
 
-                if(prevProduct.quantity === 1){
+                if (prevProduct.quantity === 1) {
                     return prevProduct;
                 }
 
-                return {...prevProduct, quantity: prevProduct.quantity - 1}
+                return { ...prevProduct, quantity: prevProduct.quantity - 1 }
             })
         })
     }
 
     const increaseProductQuantity = (productId: string) => {
-        setProducts(prevProducts =>{
+        setProducts(prevProducts => {
             return prevProducts.map(prevProduct => {
-                if(prevProduct.id !== productId) {
+                if (prevProduct.id !== productId) {
                     return prevProduct;
                 }
 
-                if(prevProduct.quantity === 50){
+                if (prevProduct.quantity === 50) {
                     return prevProduct;
                 }
-                
-                return {...prevProduct, quantity: prevProduct.quantity + 1}
+
+                return { ...prevProduct, quantity: prevProduct.quantity + 1 }
             })
         })
     }
 
-    const removeProduct = (productId:string) => {
-        setProducts(prevProducts => prevProducts.filter(product => product.id!== productId))
-    } 
+    const removeProduct = (productId: string) => {
+        setProducts(prevProducts => prevProducts.filter(product => product.id !== productId))
+    }
 
     return (
         <CartContext.Provider value={{
@@ -101,6 +107,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             decreaseProductQuantity,
             increaseProductQuantity,
             removeProduct,
+            total,
         }}>
             {children}
         </CartContext.Provider>
